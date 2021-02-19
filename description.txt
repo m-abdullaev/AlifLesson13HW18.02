@@ -1,11 +1,129 @@
 Многопотоочность — свойство платформы (например, операционной системы, виртуальной машины и т. д.) или приложения, состоящее в том, что процесс, 
 порождённый в операционной системе, может состоять из нескольких потоков, выполняющихся «параллельно», то есть без предписанного порядка во времени. 
 При выполнении некоторых задач такое разделение может достичь более эффективного использования ресурсов вычислительной машины.
-
 Такие потоки называют также потоками выполнения иногда называют «нитями» или неформально «тредами».
+static void Main(string[] args)
+{
+    // получаем текущий поток
+    Thread t = Thread.CurrentThread;
+ 
+    //получаем имя потока
+    Console.WriteLine($"Имя потока: {t.Name}");
+    t.Name = "Метод Main";
+    Console.WriteLine($"Имя потока: {t.Name}");
+ 
+    Console.WriteLine($"Запущен ли поток: {t.IsAlive}");
+    Console.WriteLine($"Приоритет потока: {t.Priority}");
+    Console.WriteLine($"Статус потока: {t.ThreadState}");
+ 
+    // получаем домен приложения
+    Console.WriteLine($"Домен приложения: {Thread.GetDomain().FriendlyName}");
+ 
+    Console.ReadLine();
+}
+Имя потока:
+Имя потока: Метод Main
+Запущен ли поток: True
+Приоритет потока: Normal
+Статус потока: Running
+Домен приложения: HelloApp
 
+-----------------------------------------------------------------------------------------
 Параллельные вычисления — способ организации компьютерных вычислений, при котором программы разрабатываются как набор взаимодействующих вычислительных процессов, 
 работающих параллельно (одновременно). 
 
+static void Main(string[] args)
+        {
+            Task task1 = new Task(() => Console.WriteLine("Task1 is executed"));
+            task1.Start();
+ 
+            Task task2 = Task.Factory.StartNew(() => Console.WriteLine("Task2 is executed"));
+ 
+            Task task3 = Task.Run(() => Console.WriteLine("Task3 is executed"));
+             
+            Console.ReadLine();
+        }
+
+--------------------------------------------------------------------------------------------
+
 Асинхронность (Асинхронизм) — не совпадение с чем-либо во времени; неодномоментность, неодновременность, несинхронность — характеризует процессы, не совпадающие во времени. 
 
+static void Main(string[] args)
+        {
+            Coffee cup = PourCoffee();
+            Console.WriteLine("coffee is ready");
+
+            Egg eggs = FryEggs(2);
+            Console.WriteLine("eggs are ready");
+
+            Bacon bacon = FryBacon(3);
+            Console.WriteLine("bacon is ready");
+
+            Toast toast = ToastBread(2);
+            ApplyButter(toast);
+            ApplyJam(toast);
+            Console.WriteLine("toast is ready");
+
+            Juice oj = PourOJ();
+            Console.WriteLine("oj is ready");
+            Console.WriteLine("Breakfast is ready!");
+        }
+
+        private static Juice PourOJ()
+        {
+            Console.WriteLine("Pouring orange juice");
+            return new Juice();
+        }
+
+        private static void ApplyJam(Toast toast) => 
+            Console.WriteLine("Putting jam on the toast");
+
+        private static void ApplyButter(Toast toast) => 
+            Console.WriteLine("Putting butter on the toast");
+
+        private static Toast ToastBread(int slices)
+        {
+            for (int slice = 0; slice < slices; slice++)
+            {
+                Console.WriteLine("Putting a slice of bread in the toaster");
+            }
+            Console.WriteLine("Start toasting...");
+            Task.Delay(3000).Wait();
+            Console.WriteLine("Remove toast from toaster");
+
+            return new Toast();
+        }
+
+        private static Bacon FryBacon(int slices)
+        {
+            Console.WriteLine($"putting {slices} slices of bacon in the pan");
+            Console.WriteLine("cooking first side of bacon...");
+            Task.Delay(3000).Wait();
+            for (int slice = 0; slice < slices; slice++)
+            {
+                Console.WriteLine("flipping a slice of bacon");
+            }
+            Console.WriteLine("cooking the second side of bacon...");
+            Task.Delay(3000).Wait();
+            Console.WriteLine("Put bacon on plate");
+
+            return new Bacon();
+        }
+
+        private static Egg FryEggs(int howMany)
+        {
+            Console.WriteLine("Warming the egg pan...");
+            Task.Delay(3000).Wait();
+            Console.WriteLine($"cracking {howMany} eggs");
+            Console.WriteLine("cooking the eggs ...");
+            Task.Delay(3000).Wait();
+            Console.WriteLine("Put eggs on plate");
+
+            return new Egg();
+        }
+
+        private static Coffee PourCoffee()
+        {
+            Console.WriteLine("Pouring coffee");
+            return new Coffee();
+        }
